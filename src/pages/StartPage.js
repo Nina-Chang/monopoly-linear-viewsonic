@@ -13,7 +13,7 @@ const StartPage = ({ onStartGame, backgroundImage }) => {
     <div className="page-container" style={pageStyle}>
       <h1 className='start-page-title'>{cfg.strings?.startTitle || 'Monopoly'}</h1>
       <button className="image-button start-button-center" onClick={onStartGame}>
-        <span className="start-button-background"></span>
+        <img src={"./images/object/Basketball_monopoly_start_button.png"}/>
         <span className="start-button-text">Start</span>
       </button>
     </div>
