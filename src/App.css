@@ -115,6 +115,163 @@ body, html {
   }
 }
 
+/* --- 遊戲頁面 --- */
+.step-1{
+  position: absolute;
+  top:76%;
+  left: 30%;
+}
+.step-2{
+  position: absolute;
+  top:76%;
+  left: 18%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-3{
+  position: absolute;
+  top:82%;
+  left: 8.5%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-4{
+  position: absolute;
+  top:68%;
+  left: 2.1%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-5{
+  position: absolute;
+  top:51%;
+  left: 5.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-6{
+  position: absolute;
+  top:49%;
+  left: 16.1%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-7{
+  position: absolute;
+  top:55%;
+  left: 25.8%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-8{
+  position: absolute;
+  top:63%;
+  left: 37%;
+}
+.step-9{
+  position: absolute;
+  top:72%;
+  left: 43.6%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-10{
+  position: absolute;
+  top:78%;
+  left: 53.6%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-11{
+  position: absolute;
+  top:80%;
+  left: 65%;
+}
+.step-12{
+  position: absolute;
+  top:85%;
+  left: 73.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-13{
+  position: absolute;
+  top:76%;
+  left: 83%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-14{
+  position: absolute;
+  top:60%;
+  left: 88.5%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-15{
+  position: absolute;
+  top:42%;
+  left: 89.6%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-16{
+  position: absolute;
+  top:24%;
+  left: 85.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-17{
+  position: absolute;
+  top:12.6%;
+  left: 77.6%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-18{
+  position: absolute;
+  top:10.3%;
+  left: 67%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-19{
+  position: absolute;
+  top:13%;
+  left: 56.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-20{
+  position: absolute;
+  top:18%;
+  left: 46.7%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-21{
+  position: absolute;
+  top:22.7%;
+  left: 36.4%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-22{
+  position: absolute;
+  top:23.7%;
+  left: 25.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+.step-23{
+  position: absolute;
+  top:22.2%;
+  left: 15.9%;
+  font-size: 36px;
+  font-weight: 700;
+}
+
 /* --- 最後頁面 --- */
 .won-player{
   position: absolute;
