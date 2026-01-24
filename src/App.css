@@ -1,38 +1,130 @@
-.App {
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* 防止滾動條出現 */
+  background-color: #000;
+  font-family: Arial, sans-serif;
+  /* box-sizing: border-box; */
+}
+
+.game-viewport {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- 通用樣式 --- */
+.page-container {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  transform-origin: top left;
+  color: #000000;
+}
+
+.image-button{
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* --- 起始頁面 --- */
+.start-page-title {
+  position: absolute;
+  top: 17%;
+  left: 50%;
+  font-size: 200px;
+  transform: translate(-50%, -50%);
+  font-weight:900;
+}
+
+.start-button-center {
+  position: relative;
+  top: 56%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.start-button-center:hover {
+  transform: scale(1.1);
+}
+.start-button-center:active {
+  transform: scale(0.9);
+}
+
+.start-button-background{
+  width: 300px;
+  height: 85px;
+  background: linear-gradient(180deg, #6B2EF3 0%, #660DCC 100%);
+  position: absolute; 
+  top:40%;
+  left:50%;
+  font-size: 55px;
+  font-weight:700;
+  transform: translate(-50%,-50%);
+  border-radius: 100px;
+
+  box-shadow: 0 10px 30px rgba(107, 46, 243, 0.4);
+}
+.start-button-text{
+  position: absolute; 
+  top:40%;
+  left:50%;
+  font-size: 55px;
+  font-weight:700;
+  transform: translate(-50%,-50%);
+  color:#fff
+}
+
+/* --- 說明頁面 --- */
+.sticker-text{
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  font-size: 48px;
+  font-weight:800;
+  transform: translate(-50%,-50%);
+}
+
+.instructions-text{
+  max-width: 1000px;
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  width: 60%;
+  font-size: 45px;
+  font-weight: 600;
+  transform: translate(-50%,-50%);
+  line-height: 1.5;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.continue-button{
+  position: absolute;
+  bottom: 22%;
+  right: 19%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.loop-animation {
+  animation: buttonLoop 2s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes buttonLoop {
+  0% {
+    transform: translateX(-50px);
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  100% {
+    transform: translateX(50px);
   }
 }
