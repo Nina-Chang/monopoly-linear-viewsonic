@@ -55,12 +55,6 @@ body, html {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.start-button-center:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-}
-.start-button-center:active {
-  transform: translate(-50%, -50%) scale(0.9);
-}
 
 .start-button-text{
   position: absolute; 
@@ -116,10 +110,92 @@ body, html {
 }
 
 /* --- 遊戲頁面 --- */
+.space-for-items{
+  position: absolute;
+  top: 40%;
+  left: 62%;
+  text-align: center;
+}
+.dice{
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  width: 180px;
+  height: 180px;
+  border-radius: 20px;
+}
+.dice::before{
+  content: '●';
+  color: #000;
+  font-size: 80px;
+  position: absolute;
+  top:15%;
+  left:20%;
+  transform: translate(-50%, -50%);
+}
+.dice::after{
+  content: '●';
+  color: #000;
+  font-size: 80px;
+  position: absolute;
+  top:48%;
+  left:48%;
+  transform: translate(-50%, -50%);
+}
+.dice-black{
+  position: absolute;
+  z-index: 99;
+  top:52%;
+  left:64%;
+  color: #000;
+  font-size: 80px;
+}
 .step-1{
   position: absolute;
   top:76%;
   left: 30%;
+}
+.player-pieces.piece-1{
+  position: absolute;
+  top:65px;
+  left:-15px;
+}
+.player-pieces.piece-1::before {
+  content: '▼';
+  position: absolute;
+  top: -30px; 
+  left: 50%;
+  transform: translateX(-50%);
+  color: #E63B3B;
+  font-size: 35px; 
+  z-index: 99;
+  animation: arrowBounce 1s infinite alternate;
+}
+@keyframes arrowBounce {
+  from { transform: translateX(-50%) translateY(0); }
+  to { transform: translateX(-50%) translateY(-10px); }
+}
+.player-pieces.piece-2{
+  position: absolute;
+  top:65px;
+  left:45px;
+}
+.player-pieces.piece-3{
+  position: absolute;
+  top:115px;
+  left:-45px;
+}
+.player-pieces.piece-4{
+  position: absolute;
+  top:115px;
+  left:15px;
+}
+.player-pieces.piece-5{
+  position: absolute;
+  top:115px;
+  left:70px;
 }
 .step-2{
   position: absolute;

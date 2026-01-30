@@ -38,6 +38,14 @@
           scoresTitle:"Scores"
         },
 
+        players: [
+          { id: 1, name: 'Player 1', score: 0, status: null },
+          { id: 2, name: 'Player 2', score: 0, status: null },
+          { id: 3, name: 'Player 3', score: 0, status: null },
+          { id: 4, name: 'Player 4', score: 0, status: null },
+          { id: 5, name: 'Player 5', score: 0, status: null },
+        ],
+
         // 圖片資源(依元件實際使用列出）
         images:{
           // 背景
@@ -46,7 +54,22 @@
           bgMonopoly:"./images/background/Basketball_monopoly_03_FHD.png",
           bgScores:"./images/background/Basketball_monopoly_04_FHD.png",
 
-          btnNext:"./images/object/Basketball_monopoly_next_button.png"
+          btnNext:"./images/object/Basketball_monopoly_next_button.png",
+
+          // 玩家頭像（1~5)
+          finchPlayers: [
+            "./images/object/Basketball_monopoly_piece_01.png",
+            "./images/object/Basketball_monopoly_piece_02.png",
+            "./images/object/Basketball_monopoly_piece_03.png",
+            "./images/object/Basketball_monopoly_piece_04.png",
+            "./images/object/Basketball_monopoly_piece_05.png",
+          ],
+        },
+
+
+        sounds:{
+          bgm:"./sounds/corporate-soft.mp3",
+          dice:"./sounds/dice.mp3"
         }
       }
     </script>

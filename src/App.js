@@ -28,7 +28,7 @@ function App() {
 
   const handleStartGame=()=>{
     if(audioRef.current && audioRef.current.paused){
-      audioRef.current.volume=0.5
+      audioRef.current.volume=0.1
       audioRef.current.currentTime = 0; // 從頭開始播放
       audioRef.current.play().catch((error)=>{
         console.log("Audio failed",error)
@@ -60,7 +60,7 @@ function App() {
         {page === 'scores' && (<ScoresPage navigateTo={navigateTo} backgroundImage={backgroundImages.scores}/>)}
       </div>
 
-      <audio ref={audioRef} src={cfg.sounds?.bgm || './sounds/funny-cartoon-no-copyright-music.mp3'} loop preload='auto'/>
+      <audio ref={audioRef} src={cfg.sounds?.bgm || './sounds/corporate-soft.mp3'} loop preload='auto'/>
     </div>
   );
 }
