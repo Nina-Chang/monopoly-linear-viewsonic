@@ -110,13 +110,18 @@ body, html {
 }
 
 /* --- 遊戲頁面 --- */
-.space-for-items{
+.sectionHidden{
+  display: none;
+}
+
+.dice-section{
   position: absolute;
   top: 40%;
   left: 62%;
   text-align: center;
 }
-.dice{
+
+.dice-face {
   position: absolute;
   top:50%;
   left:50%;
@@ -125,44 +130,134 @@ body, html {
   width: 180px;
   height: 180px;
   border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.1), 5px 5px 15px rgba(0,0,0,0.2);
 }
-.dice::before{
-  content: '●';
-  color: #000;
-  font-size: 80px;
+
+.dice-dots {
+  display: grid;
+  grid-template-areas:
+      "a . b"
+      "c d e"
+      "f . g";
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 120px;
+  height: 120px;
+  gap: 15px;
+}
+
+.dot {
+  width: 30px;
+  height: 30px;
+  background-color: #000;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+}
+
+/* 具體點位的邏輯 */
+.dice-value-1 .dot { grid-area: d; } /* 中間 */
+
+.dice-value-2 .dot:nth-child(1) { grid-area: a; }
+.dice-value-2 .dot:nth-child(2) { grid-area: g; }
+
+.dice-value-3 .dot:nth-child(1) { grid-area: a; }
+.dice-value-3 .dot:nth-child(2) { grid-area: d; }
+.dice-value-3 .dot:nth-child(3) { grid-area: g; }
+
+.dice-value-4 .dot:nth-child(1) { grid-area: a; }
+.dice-value-4 .dot:nth-child(2) { grid-area: b; }
+.dice-value-4 .dot:nth-child(3) { grid-area: f; }
+.dice-value-4 .dot:nth-child(4) { grid-area: g; }
+
+.dice-value-5 .dot:nth-child(1) { grid-area: a; }
+.dice-value-5 .dot:nth-child(2) { grid-area: b; }
+.dice-value-5 .dot:nth-child(3) { grid-area: d; }
+.dice-value-5 .dot:nth-child(4) { grid-area: f; }
+.dice-value-5 .dot:nth-child(5) { grid-area: g; }
+
+.dice-value-6 .dot:nth-child(1) { grid-area: a; }
+.dice-value-6 .dot:nth-child(2) { grid-area: b; }
+.dice-value-6 .dot:nth-child(3) { grid-area: c; }
+.dice-value-6 .dot:nth-child(4) { grid-area: e; }
+.dice-value-6 .dot:nth-child(5) { grid-area: f; }
+.dice-value-6 .dot:nth-child(6) { grid-area: g; }
+
+.question-section{
   position: absolute;
-  top:15%;
-  left:20%;
+  top:29%;
+  left: 48%;
+  text-align: center;
+}
+.question-text{
+  font-size: 34px;
+  font-weight: 700;
+  position: absolute;
+  top:4px;
+  left:50%;
+  transform: translateX(-50%);
+}
+.question-content-text{
+  font-size: clamp(18px, 2vw, 48px);;
+  font-weight: 500;
+  position: absolute;
+  top:60px;
+  left:50%;
+  transform: translateX(-50%);
+  width: 600px;
+}
+
+.answer-section{
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.answer-section button{
+  margin-bottom: 10px;
+}
+.answer-text{
+  font-size: 30px;
+  font-weight: 700;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }
-.dice::after{
-  content: '●';
-  color: #000;
-  font-size: 80px;
-  position: absolute;
-  top:48%;
-  left:48%;
-  transform: translate(-50%, -50%);
+.answer-image-button{
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
-.dice-black{
-  position: absolute;
-  z-index: 99;
-  top:52%;
-  left:64%;
-  color: #000;
-  font-size: 80px;
+
+.answer-image-button:hover:not(:disabled) {
+    transform: scale(1.1) !important;
 }
+.answer-image-button:disabled {
+    color:#000;
+}
+
+.card-section{
+  position: absolute;
+  top:30%;
+  left: 55%;
+}
+
 .step-1{
   position: absolute;
   top:76%;
   left: 30%;
 }
-.player-pieces.piece-1{
+.player-pieces-container{
   position: absolute;
-  top:65px;
-  left:-15px;
+  top:0;
+  left:30px;
 }
-.player-pieces.piece-1::before {
+.player-pieces.is-current::before {
   content: '▼';
   position: absolute;
   top: -30px; 
@@ -176,6 +271,11 @@ body, html {
 @keyframes arrowBounce {
   from { transform: translateX(-50%) translateY(0); }
   to { transform: translateX(-50%) translateY(-10px); }
+}
+.player-pieces.piece-1{
+  position: absolute;
+  top:65px;
+  left:-15px;
 }
 .player-pieces.piece-2{
   position: absolute;
@@ -349,7 +449,31 @@ body, html {
 }
 
 /* --- 最後頁面 --- */
-.won-player{
+.won-player-1{
+  position: absolute;
+  top:2%;
+  left: 47%;
+  transform: translateX(-50%);
+}
+.won-player-2{
+  position: absolute;
+  top:5%;
+  left: 48%;
+  transform: translateX(-50%);
+}
+.won-player-3{
+  position: absolute;
+  top:0%;
+  left: 48%;
+  transform: translateX(-50%);
+}
+.won-player-4{
+  position: absolute;
+  top:1%;
+  left: 48%;
+  transform: translateX(-50%);
+}
+.won-player-5{
   position: absolute;
   top:-3%;
   left: 48%;

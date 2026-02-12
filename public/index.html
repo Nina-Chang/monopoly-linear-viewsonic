@@ -39,11 +39,11 @@
         },
 
         players: [
-          { id: 1, name: 'Player 1', score: 0, status: null },
-          { id: 2, name: 'Player 2', score: 0, status: null },
-          { id: 3, name: 'Player 3', score: 0, status: null },
-          { id: 4, name: 'Player 4', score: 0, status: null },
-          { id: 5, name: 'Player 5', score: 0, status: null },
+          { id: 1, name: 'Player 1', current: true,step:1,positionInStep:1,img: "./images/object/Basketball_monopoly_piece_02.png" },
+          { id: 2, name: 'Player 2', current: false,step:1,positionInStep:2,img: "./images/object/Basketball_monopoly_piece_01.png" },
+          { id: 3, name: 'Player 3', current: false,step:1,positionInStep:3,img: "./images/object/Basketball_monopoly_piece_05.png" },
+          { id: 4, name: 'Player 4', current: false,step:1,positionInStep:4,img: "./images/object/Basketball_monopoly_piece_03.png" },
+          { id: 5, name: 'Player 5', current: false,step:1,positionInStep:5,img: "./images/object/Basketball_monopoly_piece_04.png" },
         ],
 
         // 圖片資源(依元件實際使用列出）
@@ -69,7 +69,41 @@
 
         sounds:{
           bgm:"./sounds/corporate-soft.mp3",
-          dice:"./sounds/dice.mp3"
+          dice:"./sounds/dice.mp3",
+          correct:"./sounds/correct.mp3",
+          wrong:"./sounds/wrong.mp3",
+        },
+
+        questions:{
+          "questions": [
+            {
+              "question": "What is it called when a player bounces the ball while moving?",
+              "options": [
+                "Dribbling",
+                "Passing",
+                "Shooting",
+              ],
+              "answer": "Dribbling"
+            },
+            {
+              "question": "How many players are on the court for one basketball team during play?",
+              "options": [
+                "5",
+                "6",
+                "7",
+              ],
+              "answer": "5"
+            },
+            {
+              "question": "How many points is a free throw worth?",
+              "options": [
+                "1",
+                "2",
+                "3",
+              ],
+              "answer": "1"
+            },
+          ]
         }
       }
     </script>

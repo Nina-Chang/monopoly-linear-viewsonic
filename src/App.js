@@ -18,6 +18,7 @@ function App() {
   const [page, setPage] = useState('start');
   const [players, setPlayers] = useState(cfg.players || []);
   const [scale, setScale] = useState(1);
+  const [currentProblemIndex,setCurrentProblemIndex]=useState(0)
   const audioRef=useRef(null)
 
   const navigateTo = (pageName) => setPage(pageName);
@@ -56,8 +57,8 @@ function App() {
       <div style={gameStyle}>
         {page === 'start' && (<StartPage navigateTo={navigateTo} onStartGame={handleStartGame} backgroundImage={backgroundImages.start}/>)}
         {page === 'instructions' && (<InstructionsPage navigateTo={navigateTo} onStartGame={handleStartGame} backgroundImage={backgroundImages.instructions}/>)}
-        {page === 'monopoly' && (<MonopolyPage navigateTo={navigateTo} backgroundImage={backgroundImages.monopoly}/>)}
-        {page === 'scores' && (<ScoresPage navigateTo={navigateTo} backgroundImage={backgroundImages.scores}/>)}
+        {page === 'monopoly' && (<MonopolyPage navigateTo={navigateTo} backgroundImage={backgroundImages.monopoly} currentProblemIndex={currentProblemIndex} setCurrentProblemIndex={setCurrentProblemIndex} players={players} setPlayers={setPlayers}/>)}
+        {page === 'scores' && (<ScoresPage navigateTo={navigateTo} backgroundImage={backgroundImages.scores} players={players} setPlayers={setPlayers}/>)}
       </div>
 
       <audio ref={audioRef} src={cfg.sounds?.bgm || './sounds/corporate-soft.mp3'} loop preload='auto'/>

@@ -17,10 +17,8 @@ const StartPage = ({ onStartGame, backgroundImage }) => {
     setScale(0.9);
     await new Promise(resolve => setTimeout(resolve, 100)); // wait for 100ms
     setScale(1);
-
-    setTimeout(() => {
-      onStartGame();
-    },300);
+    await new Promise(resolve => setTimeout(resolve, 300)); // wait for 100ms
+    onStartGame();
   }
 
 
