@@ -201,7 +201,7 @@ body, html {
   transform: translateX(-50%);
 }
 .question-content-text{
-  font-size: clamp(18px, 2vw, 48px);;
+  font-size: clamp(18px, 2vw, 48px);
   font-weight: 500;
   position: absolute;
   top:60px;
@@ -220,7 +220,8 @@ body, html {
   margin-bottom: 10px;
 }
 .answer-text{
-  font-size: 30px;
+  width: 500px;
+  font-size: clamp(18px, 2vw, 48px);
   font-weight: 700;
   position: absolute;
   top: 50%;
@@ -254,8 +255,18 @@ body, html {
 }
 .player-pieces-container{
   position: absolute;
-  top:0;
-  left:30px;
+  top:-230%;
+  left:24%;
+}
+.player-pieces-container-with-img-8{
+  position: absolute;
+  top:-80%;
+  left:-20%;
+}
+.player-pieces-container-with-img-11{
+  position: absolute;
+  top:-50%;
+  left:4%;
 }
 .player-pieces.is-current::before {
   content: '▼';

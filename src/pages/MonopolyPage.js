@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 
 const cfg = (typeof window !== 'undefined' && window.gameConfig) ? window.gameConfig : {};
 
 
-const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurrentProblemIndex,players,setPlayers}) => {
+const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurrentProblemIndex,players,setPlayers,bgmAudio}) => {
     const [scaleForDice, setScaleForDice] = useState(1)
     const initialButtonState={A:-1,B:-1,C:-1} // 0:false 1:true -1:not yet to choose
     const [isCorrect, setIsCorrect] = useState(initialButtonState) // 0:false 1:true -1:not yet to choose
@@ -11,9 +11,11 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
     const [buttonScale, setButtonScale] = useState(initialButtonScale);
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const [sectionVisible, setSectionVisible] = useState({dice:true,question:false,chest:false,chance:false})
-    const [cardIndex, setCardIndex] = useState({chest:1,chance:1});
+    const [cardIndex, setCardIndex] = useState({chest:0,chance:0});
     const [diceNumber, setDiceNumber] = useState(3); // 預設顯示 3 點
     const [isRolling, setIsRolling] = useState(false);
+    const [theEndStep, setTheEndStep] = useState(false)
+    const currentPlayer=players.find(p=>p.current===true)
 
     const pageStyle = { 
         backgroundImage: `url(${backgroundImage})`,
@@ -22,6 +24,40 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         loading:'eager'
     };
 
+    useEffect(()=>{
+        if(bgmAudio && bgmAudio.paused){
+            bgmAudio.currentTime = 0; // 從頭開始播放
+            bgmAudio.volume=0.1
+            bgmAudio.play().catch((error)=>{console.log("Audio failed",error)});
+        }
+    },[])
+
+    useEffect(()=>{
+        if (!currentPlayer) return;
+        if (currentPlayer.current===true && currentPlayer.pauseRound > 0) {
+            // 扣除暫停回合，並直接切換到下一位
+            const timer = setTimeout(() => {
+                setPlayers(prevPlayers => {
+                    const total = prevPlayers.length;
+                    const nextId = (currentPlayer.id % total) + 1;
+                    
+                    return prevPlayers.map(p => {
+                        if (p.id === currentPlayer.id) {
+                            return { ...p, pauseRound: p.pauseRound - 1, current: false };
+                        }
+                        if (p.id === nextId) {
+                            return { ...p, current: true };
+                        }
+                        return p;
+                    });
+                });
+            }, 500); // 延遲 0.5 秒再跳轉，讓玩家看清楚發生什麼事
+
+            return () => clearTimeout(timer); // 清除 timer 避免記憶體洩漏
+            
+        }
+    },[currentPlayer?.id])
+
     const playSound=useCallback((soundPath)=>{
         const audio=new Audio(soundPath)
         audio.play().catch((error)=>{
@@ -29,7 +65,7 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         })
     },[])
 
-    const handleDiceClick=async()=>{
+    const handleDiceClick=async(playerCurStep)=>{
         if (isRolling) return; // 防止連點
         setIsRolling(true);
         playSound(cfg?.sounds?.dice || "./sounds/dice.mp3")
@@ -39,7 +75,6 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         // 模擬骰子隨機跳動的過程 (跳動 10 次)
         let rollCount = 0;
         const rollInterval = setInterval(() => {
-            // 隨機跳 1-6 隨機
             const tempNums = Array.from({ length: 6 }, (_, i) => i + 1); // [1,2,3,4,5,6]
             const randomTemp = tempNums[Math.floor(Math.random() * tempNums.length)];
             setDiceNumber(randomTemp);
@@ -55,11 +90,10 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         
         const finalResult = Math.floor(Math.random() * 6) + 1; // 最終 1-6
         setDiceNumber(finalResult);
-        setIsRolling(false);
         setTimeout(()=>{
-            const currentPlayer=players.find(p=>p.current===true)
-            // 顯示題目
-            handleMoveThePlayer(currentPlayer.id,finalResult)
+            const playerId=players.find(p=>p.current===true).id
+            const curStep=playerCurStep===null?null:playerCurStep
+            handleMoveThePlayer(playerId,curStep,finalResult)
         },500)
     }
     
@@ -117,10 +151,40 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         }
     }
 
+    const handleNextPlayerTurn=()=>{
+        setPlayers(prevPlayers => {
+            const currentId = currentPlayer.id;
+            const nextId = players.length===1?1:(currentId % prevPlayers.length) + 1; // 循環到下一位玩家
+            return (
+                prevPlayers.map(p =>
+                    {
+                        if(currentId===nextId)// 只有一位玩家
+                            return {...p,current:true}
+                        if(p.id===currentId)
+                            return {...p,current:false}
+                        else if(p.id===nextId)
+                            return {...p,current:true}
+                        else
+                            return p
+                    }
+                )
+            );
+        });
+    }
+
+
     const reset=()=>{
+        if(theEndStep===true){
+            setCurrentProblemIndex(0)
+            navigateTo("scores")
+        }
         setIsCorrect(initialButtonState);
         setButtonDisabled(false)
+        // 換下一位玩家
+        handleNextPlayerTurn()
     }
+
+
 
     // 渲染站在某一步的玩家棋子
     const renderPieces = (stepNum) => {
@@ -130,10 +194,10 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         if (playersOnThisStep.length === 0) return null
     
         return (
-            <div className={stepNum!==1&&'player-pieces-container'}>
+            <div className={stepNum===1?'':stepNum===8||stepNum===11?`player-pieces-container-with-img-${stepNum}`:'player-pieces-container'}>
                 {playersOnThisStep.map((p) => (
                     <div key={p.id} className={`player-pieces piece-${p.positionInStep} ${p.current ? 'is-current' : ''}`}>
-                        <img src={cfg?.images?.finchPlayers?.[p.id] || p.img} alt={`player-${p.id}`} />
+                        <img src={cfg?.images?.finchPlayers?.[p.id-1]|| `./images/object/Basketball_monopoly_piece_0${p.id}.png`} alt={`player-${p.id}`} />
                     </div>
                 ))}
             </div>
@@ -141,45 +205,65 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
     };
 
     // 移動玩家到下一步
-    const handleMoveThePlayer = async (playerId, nextStep) => {
-        const playerCurrentStep = players.find(p => p.id === playerId)?.step || 1;
+    const handleMoveThePlayer = (playerId,playerCurStep, nextStepOrTotal) => {
+        let finalStep;
         
-        // 找出玩家將要移動到的下一步上已經有幾個玩家了，決定棋子位置
-        const playersOnThisStep = players.filter(p => p.step === playerCurrentStep+nextStep);
+        const currentPlayer = players.find(p => p.id === playerId);
+        if (!currentPlayer) return;
 
-        setPlayers(prevPlayers => 
-            prevPlayers.map(p => 
+        if (Math.abs(nextStepOrTotal) > 30) {
+            finalStep = 1; // 回到原點
+        } else {
+            const curStep = playerCurStep===null ?currentPlayer.step:playerCurStep;
+            finalStep = curStep + nextStepOrTotal;
+        }
+
+        if (finalStep >= 23) finalStep = 23;
+        if (finalStep <= 1) finalStep = 1;
+
+        // 更新玩家位置
+        setPlayers(prevPlayers => {
+            const playersOnThisStep = prevPlayers.filter(p => p.step === finalStep && p.id !== playerId);
+            // 找出這些玩家中，最大的 positionInStep 是多少
+            const maxPosition = playersOnThisStep.length > 0 
+            ? Math.max(...playersOnThisStep.map(p => p.positionInStep || 0)) 
+            : 0;
+            return prevPlayers.map(p => 
                 p.id === playerId 
-                ? { ...p, step: playerCurrentStep+nextStep>=23 ? 23 : playerCurrentStep+nextStep, positionInStep: playersOnThisStep.length+1,current:false } 
-                :  p
-            )
-        );
-        // setPlayers(prevPlayers => 
-        //     prevPlayers.map(p => 
-        //         p.id === playerId 
-        //         ? { ...p, step: playerCurrentStep+nextStep>=23 ? 23 : playerCurrentStep+nextStep, positionInStep: playersOnThisStep.length+1,current:false } 
-        //         : p.id === (playerId%prevPlayers.length)+1 ? {...p,current:true} : p
-        //     )
-        // );
+                ? { ...p, step: finalStep, positionInStep: maxPosition + 1 } 
+                : p
+            );
+        });
 
-        setTimeout(()=>{
-            if(playerCurrentStep+nextStep>=23){
-                navigateTo("scores")
-            }
-            else if(playerCurrentStep+nextStep===8){
-                handleOpenChest()
-            }
-            else if(playerCurrentStep+nextStep===11){
+        setTimeout(() => {
+            if (finalStep >= 23) {
+                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+                setTheEndStep(true);
+            } 
+            else if (finalStep === 8) {
+                handleOpenChest().then(() => {
+                    // 換下一位玩家
+                    handleNextPlayerTurn()
+                }).catch(()=>{})
+            } 
+            else if (finalStep === 11) {
                 handleOpenChance()
+            } 
+            else if(finalStep === 1){
+                // 換下一位玩家
+                handleNextPlayerTurn()
+                setSectionVisible({ dice: true, question: false, chest: false, chance: false });
             }
-            else{
-                setSectionVisible({dice:false,question:true,chest:false,chance:false})
+            else {
+                // 只有一般格子才顯示問題
+                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
             }
-        },1000)
-
+            setIsRolling(false);
+            setDiceNumber(3); 
+        }, 1000);
     };
 
-    const getChestRandomCard=(type)=>{
+    const getRandomCard=(type)=>{
         const random=Math.floor(Math.random()*100)+1;
         if(type==="chest"){
             if(random<=30){
@@ -213,30 +297,144 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         }
     }
 
-    const handleOpenChest=()=>{
-        const cardId=getChestRandomCard("chest");
-        setCardIndex(prev=>({...prev,chest:cardId}))
-        setSectionVisible({dice:false,question:false,chest:true,chance:false})
-        setTimeout(()=>{
-            setSectionVisible({dice:true,question:false,chest:false,chance:false})
-        },1000)
+    const handleOpenChest=()=>{// 打開命運卡
+        return new Promise((resolve,reject)=>{
+            const cardId=getRandomCard("chest");
+            setCardIndex(prev=>({...prev,chest:cardId}))
+            setSectionVisible({dice:false,question:false,chest:true,chance:false})
+            setTimeout(()=>{
+                if(cardId===1){// 後退一步
+                    const playerId=players.find(p=>p.current===true).id
+                    handleMoveThePlayer(playerId,8,-1)
+                    reject()
+                }
+                else if(cardId===2){// 回到原點
+                    const playerId=players.find(p=>p.current===true).id
+                    handleMoveThePlayer(playerId,8,-100)
+                }
+                else if(cardId===3){// 暫停一回
+                    setPlayers(prevPlayers => 
+                        prevPlayers.map(p => 
+                            p.current === true ? {...p, pauseRound: 1} : p)
+                    )
+                    setSectionVisible({dice:true,question:false,chest:false,chance:false})
+                }
+                else{// 和最近的玩家換位置
+                    setPlayers(prevPlayers => {
+                        // 找到當前玩家
+                        const currentPlayer = prevPlayers.find(p => p.current);
+                        if (!currentPlayer) return prevPlayers;
+    
+                        // 尋找最近的玩家 (排除自己)
+                        let closestPlayer = null;
+                        let minDistance = Infinity;
+    
+                        prevPlayers.forEach(p => {
+                            if (p.id !== currentPlayer.id) {
+                                const distance = Math.abs(p.step - currentPlayer.step);
+                                // 如果距離更小，或者距離一樣但我們想選特定的(例如後面的玩家)，就更新
+                                if (distance < minDistance|| (distance === minDistance && p.step > currentPlayer.step)) {
+                                    minDistance = distance;
+                                    closestPlayer = p;
+                                }
+                            }
+                        });
+    
+                        // 如果場上沒別人，就不換
+                        if (!closestPlayer) return prevPlayers;
+    
+                        // 執行交換 (回傳新的陣列)
+                        return prevPlayers.map(p => {
+                            const playersOnThisStep = prevPlayers.filter(p => p.step === closestPlayer.step && p.id !== currentPlayer.id);
+                            // 找出這些玩家中，最大的 positionInStep 是多少
+                            const maxPosition = playersOnThisStep.length > 0 
+                            ? Math.max(...playersOnThisStep.map(p => p.positionInStep || 0)) 
+                            : 0;
+                            if (p.id === currentPlayer.id) {
+                                // 當前玩家拿到目標的位置
+                                return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1 };
+                            }
+                            if (p.id === closestPlayer.id) {
+                                // 目標玩家拿到當前玩家的位置
+                                return { ...p, step: currentPlayer.step,positionInStep:currentPlayer.positionInStep };
+                            }
+                            return p;
+                        });
+                    });
+                    setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+                    reject()
+                }
+                resolve()
+            },1000)
+
+        })
     }
 
-    const handleOpenChance=()=>{
-        const cardId=getChestRandomCard("chance");
+    const handleOpenChance=()=>{// 打開機會卡
+        const cardId=getRandomCard("chance");
         setCardIndex(prev=>({...prev,chance:cardId}))
         setSectionVisible({dice:false,question:false,chest:false,chance:true})
         setTimeout(()=>{
-            setSectionVisible({dice:true,question:false,chest:false,chance:false})
-        },1000)
+            if(cardId===1){// 再骰一次
+                setSectionVisible({dice:true,question:false,chest:false,chance:false})
+                handleDiceClick(11)
+            }
+            else if(cardId===2){// 前進一步
+                const playerId=players.find(p=>p.current===true).id
+                handleMoveThePlayer(playerId,11,1)
+            }
+            else if(cardId===3){// 前進二步
+                const playerId=players.find(p=>p.current===true).id
+                handleMoveThePlayer(playerId,11,2)
+            }
+            else{// 和最近的玩家同一格
+                setPlayers(prevPlayers => {
+                    // 找到當前玩家
+                    const currentPlayer = prevPlayers.find(p => p.current);
+                    if (!currentPlayer) return prevPlayers;
 
+                    // 尋找最近的玩家 (排除自己)
+                    let closestPlayer = null;
+                    let minDistance = Infinity;
+
+                    prevPlayers.forEach(p => {
+                        if (p.id !== currentPlayer.id) {
+                            const distance = Math.abs(p.step - currentPlayer.step);
+                            
+                            // 邏輯：找到距離最小的人
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                closestPlayer = p;
+                            }
+                        }
+                    });
+
+                    // 如果找不到其他人（例如只有一個玩家），就原地不動
+                    if (!closestPlayer) return prevPlayers;
+
+
+
+                    // 更新當前玩家的位置
+                    return prevPlayers.map(p => {
+                        const playersOnThisStep = prevPlayers.filter(p => p.step === closestPlayer.step && p.id !== currentPlayer.id);
+                        // 找出這些玩家中，最大的 positionInStep 是多少
+                        const maxPosition = playersOnThisStep.length > 0 
+                        ? Math.max(...playersOnThisStep.map(p => p.positionInStep || 0)) 
+                        : 0;
+                        if (p.id === currentPlayer.id) {
+                            // 將自己的 step 設為跟最近的人一樣
+                            return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1 };
+                        }
+                        return p;
+                    });
+                });
+                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+            }
+        },1000)
     }
 
     return (
         <div className="page-container" style={pageStyle}>
-            <button onClick={()=>{navigateTo("scores")}}>
-                navigateTo
-            </button>
             <div className={`card-section ${sectionVisible.chest===false ? 'sectionHidden' : ''}`}>
                 <img src={`./images/object/Basketball_monopoly_community_chest_card_0${cardIndex.chest}.png`} alt={`chest_card_0${cardIndex.chest}`} />
             </div>
@@ -246,11 +444,11 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
             <div className={`dice-section ${sectionVisible.dice===false ? 'sectionHidden' : ''}`}
                 onMouseEnter={()=>{setScaleForDice(1.1)}}
                 onMouseLeave={()=>{setScaleForDice(1)}}
-                onClick={handleDiceClick}
+                onClick={()=>{handleDiceClick(null)}}
                 style={{transform:`scale(${scaleForDice})`}}>
                 <img src="./images/object/Basketball_monopoly_dice_background.png" alt="" />
     
-                <div className="dice-face">
+                <div className="dice-face" style={{cursor:isRolling?"not-allowed":"pointer"}}>
                     <div className={`dice-dots dice-value-${diceNumber}`}>
                         {/* 根據點數產生對應數量的點點 */}
                         {Array.from({ length: diceNumber }).map((_, i) => (
@@ -290,7 +488,6 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
             <div>
                 {Array.from({ length: 23 }, (_, i) => i + 1).map((stepNum) => (
                     <div key={stepNum} className={`step-box step-${stepNum}`}>
-                        {/* 特殊格標記 */}
                         {stepNum === 1 && <img src="./images/object/Basketball_monopoly_GO.png" className="grid-icon" />}
                         {stepNum === 8 && <img src="./images/object/Basketball_monopoly_question_mark.png" className="grid-icon" />}
                         {stepNum === 11 && <img src="./images/object/Basketball_monopoly_treasure_chest.png" className="grid-icon" />}

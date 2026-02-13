@@ -39,11 +39,11 @@
         },
 
         players: [
-          { id: 1, name: 'Player 1', current: true,step:1,positionInStep:1,img: "./images/object/Basketball_monopoly_piece_02.png" },
-          { id: 2, name: 'Player 2', current: false,step:1,positionInStep:2,img: "./images/object/Basketball_monopoly_piece_01.png" },
-          { id: 3, name: 'Player 3', current: false,step:1,positionInStep:3,img: "./images/object/Basketball_monopoly_piece_05.png" },
-          { id: 4, name: 'Player 4', current: false,step:1,positionInStep:4,img: "./images/object/Basketball_monopoly_piece_03.png" },
-          { id: 5, name: 'Player 5', current: false,step:1,positionInStep:5,img: "./images/object/Basketball_monopoly_piece_04.png" },
+          { id: 1, name: 'Player 1', current: true,pauseRound:0,step:1,positionInStep:1 },
+          { id: 2, name: 'Player 2', current: false,pauseRound:0,step:1,positionInStep:2 },
+          { id: 3, name: 'Player 3', current: false,pauseRound:0,step:1,positionInStep:3 },
+          { id: 4, name: 'Player 4', current: false,pauseRound:0,step:1,positionInStep:4 },
+          { id: 5, name: 'Player 5', current: false,pauseRound:0,step:1,positionInStep:5 },
         ],
 
         // 圖片資源(依元件實際使用列出）
@@ -58,11 +58,11 @@
 
           // 玩家頭像（1~5)
           finchPlayers: [
-            "./images/object/Basketball_monopoly_piece_01.png",
             "./images/object/Basketball_monopoly_piece_02.png",
+            "./images/object/Basketball_monopoly_piece_01.png",
+            "./images/object/Basketball_monopoly_piece_05.png",
             "./images/object/Basketball_monopoly_piece_03.png",
             "./images/object/Basketball_monopoly_piece_04.png",
-            "./images/object/Basketball_monopoly_piece_05.png",
           ],
         },
 
@@ -72,6 +72,7 @@
           dice:"./sounds/dice.mp3",
           correct:"./sounds/correct.mp3",
           wrong:"./sounds/wrong.mp3",
+          gameSuccess:"./sounds/gameSuccess.mp3",
         },
 
         questions:{
@@ -102,6 +103,222 @@
                 "3",
               ],
               "answer": "1"
+            },
+            {
+              "question": "How many points is a shot made behind the three-point line worth?",
+              "options": [
+                "2",
+                "3",
+                "1",
+              ],
+              "answer": "3"
+            },
+            {
+              "question": "Which action starts the game of basketball?",
+              "options": [
+                "Tip-off",
+                "Jump ball",
+                "Free throw",
+              ],
+              "answer": "Jump ball"
+            },
+            {
+              "question": "What is dribbling?",
+              "options": [
+                "Bouncing the ball while moving",
+                "Passing to a teammate",
+                "Shooting at the basket",
+              ],
+              "answer": "Bouncing the ball while moving"
+            },
+            {
+              "question": "What is a rebound?",
+              "options": [
+                "Catching the ball after a missed shot",
+                "Stealing the ball",
+                "Blocking a pass",
+              ],
+              "answer": "Catching the ball after a missed shot"
+            },
+            {
+              "question": "Which skill is used to move the ball without traveling?",
+              "options": [
+                "Dribbling",
+                "Passing",
+                "Pivoting",
+              ],
+              "answer": "Dribbling"
+            },
+            {
+              "question": "What is the maximum seconds allowed in the key (paint) for offense?",
+              "options": [
+                "3",
+                "5",
+                "10",
+              ],
+              "answer": "3"
+            },
+            {
+              "question": "Which move fakes a shot to trick the defender?",
+              "options": [
+                "Screen",
+                "Pump fake",
+                "Pass",
+              ],
+              "answer": "Pump fake"
+            },
+            {
+              "question": "What is traveling in basketball?",
+              "options": [
+                "Running without dribbling",
+                "Fouling while shooting",
+                "Staying in key too long",
+              ],
+              "answer": "Running without dribbling"
+            },
+            {
+              "question": "What does a referee use to stop play?",
+              "options": [
+                "Whistle",
+                "Hand signal",
+                "Flag",
+              ],
+              "answer": "Whistle"
+            },
+            {
+              "question": "Which line marks the long-range shot area?",
+              "options": [
+                "Free throw line",
+                "Three-point line",
+                "Baseline",
+              ],
+              "answer": "Three-point line"
+            },
+            {
+              "question": "What is defense?",
+              "options": [
+                "Guarding to stop scoring",
+                "Passing quickly",
+                "Dribbling fast",
+              ],
+              "answer": "Guarding to stop scoring"
+            },
+            {
+              "question": "Which pass is thrown with two hands from the chest?",
+              "options": [
+                "Chest pass",
+                "Bounce pass",
+                "Overhead pass",
+              ],
+              "answer": "Chest pass"
+            },
+            {
+              "question": "Which pass bounces once before reaching a teammate?",
+              "options": [
+                "Chest pass",
+                "Bounce pass",
+                "Overhead pass",
+              ],
+              "answer": "Bounce pass"
+            },
+            {
+              "question": "Which skill is used to protect the ball with the body?",
+              "options": [
+                "Screen",
+                "Shielding",
+                "Blocking",
+              ],
+              "answer": "Shielding"
+            },
+            {
+              "question": "What is an assist?",
+              "options": [
+                "A pass that leads directly to a basket",
+                "Rebound from a miss",
+                "Defensive block",
+              ],
+              "answer": "A pass that leads directly to a basket"
+            },
+            {
+              "question": "Which is a violation?",
+              "options": [
+                "Traveling",
+                "Dribbling",
+                "Passing",
+              ],
+              "answer": "Traveling"
+            },
+            {
+              "question": "Which skill is most used for scoring close to the basket?",
+              "options": [
+                "Layup",
+                "Free throw",
+                "Dribble",
+              ],
+              "answer": "Layup"
+            },
+            {
+              "question": "Which player usually brings the ball up the court?",
+              "options": [
+                "Center",
+                "Guard",
+                "Forward",
+              ],
+              "answer": "Guard"
+            },
+            {
+              "question": "Which player is often the tallest and plays near the basket?",
+              "options": [
+                "Guard",
+                "Forward",
+                "Center",
+              ],
+              "answer": "Center"
+            },
+            {
+              "question": "What is the job of the point guard?",
+              "options": [
+                "Dribble and set up plays",
+                "Rebound shots",
+                "Block shots",
+              ],
+              "answer": "Dribble and set up plays"
+            },
+            {
+              "question": "What happens after five personal fouls in one game (high school)?",
+              "options": [
+                "Player is disqualified",
+                "Player switches teams",
+                "Player gets free throw",
+              ],
+              "answer": "Player is disqualified"
+            },
+            {
+              "question": "Which defense covers a specific area?",
+              "options": [
+                "Man-to-man",
+                "Zone",
+                "Double-team",
+              ],
+              "answer": "Zone"
+            },
+            {
+              "question": "Which defense covers one assigned player?",
+              "options": [
+                "Man-to-man",
+                "Zone",
+                "Trap",
+              ],
+              "answer": "Man-to-man"
+            },
+            {
+              "question": "Which shot is taken while moving to the basket off one foot?",
+              "options": [
+                "Layup",
+                "Free throw",
+                "Jump shot",
+              ],
+              "answer": "Layup"
             },
           ]
         }
