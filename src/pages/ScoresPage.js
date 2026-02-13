@@ -24,7 +24,7 @@ const ScoresPage = ({navigateTo, backgroundImage, players, setPlayers,bgmAudio})
 
         return (
             wonPlayer&&
-            <img className={`won-player-${wonPlayer.id}`} src={`./images/object/Basketball_monopoly_finch_0${wonPlayer.id}.png`}/>
+            <img className={`won-player-${wonPlayer.id}`} src={`./images/object/Basketball_monopoly_finch_0${wonPlayer.id}.png`} alt="Won Player"/>
         )
     }
 

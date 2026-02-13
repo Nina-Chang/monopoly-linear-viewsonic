@@ -29,7 +29,7 @@ const StartPage = ({ onStartGame, backgroundImage }) => {
         onMouseEnter={()=>{setScale(1.1)}}
         onMouseLeave={()=>{setScale(1)}}
         onClick={handleClick} style={{transform:`translate(-50%, -50%) scale(${scale})`}}>
-        <img src={"./images/object/Basketball_monopoly_start_button.png"}/>
+        <img src={"./images/object/Basketball_monopoly_start_button.png"} alt="start button"/>
         <span className="start-button-text">Start</span>
       </button>
     </div>

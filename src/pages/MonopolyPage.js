@@ -230,7 +230,7 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
             : 0;
             return prevPlayers.map(p => 
                 p.id === playerId 
-                ? { ...p, step: finalStep, positionInStep: maxPosition + 1 } 
+                ? { ...p, step: finalStep, positionInStep: maxPosition+1>prevPlayers.length?1:maxPosition+1 } 
                 : p
             );
         });
@@ -352,7 +352,7 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                             : 0;
                             if (p.id === currentPlayer.id) {
                                 // 當前玩家拿到目標的位置
-                                return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1 };
+                                return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1>prevPlayers.length?1:maxPosition+1 };
                             }
                             if (p.id === closestPlayer.id) {
                                 // 目標玩家拿到當前玩家的位置
@@ -423,7 +423,7 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                         : 0;
                         if (p.id === currentPlayer.id) {
                             // 將自己的 step 設為跟最近的人一樣
-                            return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1 };
+                            return { ...p, step: closestPlayer.step,positionInStep:maxPosition+1>prevPlayers.length?1:maxPosition+1 };
                         }
                         return p;
                     });
@@ -503,91 +503,6 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                     </div>
                 ))}
             </div>
-            {/* <span className="step-1">
-                <img src="./images/object/Basketball_monopoly_GO.png" alt="" />
-                <div className='player-pieces piece-1'>
-                    <img src={cfg?.images?.finchPlayers?.[1] || "./images/object/Basketball_monopoly_piece_02.png"} alt="" />
-                </div>
-                <div className='player-pieces piece-2'>
-                    <img src={cfg?.images?.finchPlayers?.[0] || "./images/object/Basketball_monopoly_piece_01.png"} alt="" />
-                </div>
-                <div className='player-pieces piece-3'>
-                    <img src={cfg?.images?.finchPlayers?.[4] || "./images/object/Basketball_monopoly_piece_05.png"} alt="" />
-                </div>
-                <div className='player-pieces piece-4'>
-                    <img src={cfg?.images?.finchPlayers?.[2] || "./images/object/Basketball_monopoly_piece_03.png"} alt="" />
-                </div>
-                <div className='player-pieces piece-5'>
-                    <img src={cfg?.images?.finchPlayers?.[3] || "./images/object/Basketball_monopoly_piece_04.png"} alt="" />
-                </div>
-            </span>
-            <span className="step-2">
-                Question
-                
-            </span>
-            <span className="step-3">
-                Question
-            </span>
-            <span className="step-4">
-                Question
-            </span>
-            <span className="step-5">
-                Question
-            </span>
-            <span className="step-6">
-                Question
-            </span>
-            <span className="step-7">
-                Question
-            </span>
-            <span className="step-8">
-                <img src="./images/object/Basketball_monopoly_question_mark.png" alt="" />
-            </span>
-            <span className="step-9">
-                Question
-            </span>
-            <span className="step-10">
-                Question
-            </span>
-            <span className="step-11">
-                <img src="./images/object/Basketball_monopoly_treasure_chest.png" alt="" />
-            </span>
-            <span className="step-12">
-                Question
-            </span>
-            <span className="step-13">
-                Question
-            </span>
-            <span className="step-14">
-                Question
-            </span>
-            <span className="step-15">
-                Question
-            </span>
-            <span className="step-16">
-                Question
-            </span>
-            <span className="step-17">
-                Question
-            </span>
-            <span className="step-18">
-                Question
-            </span>
-            <span className="step-19">
-                Question
-            </span>
-            <span className="step-20">
-                Question
-            </span>
-            <span className="step-21">
-                Question
-            </span>
-            <span className="step-22">
-                Question
-            </span>
-            <span className="step-23">
-                Question
-            </span> */}
         </div>
     )
 }
