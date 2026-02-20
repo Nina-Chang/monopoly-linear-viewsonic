@@ -204,6 +204,32 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         );
     };
 
+    // 判斷當前第幾步的操作
+    const handleAfterStepActions=(step)=>{
+        if (step >= 23) {
+            setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+            setTheEndStep(true);
+        } 
+        else if (step === 8) {
+            handleOpenChest().then(() => {
+                // 換下一位玩家
+                handleNextPlayerTurn()
+            }).catch(()=>{})
+        } 
+        else if (step === 11) {
+            handleOpenChance()
+        } 
+        else if(step === 1){
+            // 換下一位玩家
+            handleNextPlayerTurn()
+            setSectionVisible({ dice: true, question: false, chest: false, chance: false });
+        }
+        else {
+            // 只有一般格子才顯示問題
+            setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+        }
+    }
+
     // 移動玩家到下一步
     const handleMoveThePlayer = (playerId,playerCurStep, nextStepOrTotal) => {
         let finalStep;
@@ -236,28 +262,7 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
         });
 
         setTimeout(() => {
-            if (finalStep >= 23) {
-                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
-                setTheEndStep(true);
-            } 
-            else if (finalStep === 8) {
-                handleOpenChest().then(() => {
-                    // 換下一位玩家
-                    handleNextPlayerTurn()
-                }).catch(()=>{})
-            } 
-            else if (finalStep === 11) {
-                handleOpenChance()
-            } 
-            else if(finalStep === 1){
-                // 換下一位玩家
-                handleNextPlayerTurn()
-                setSectionVisible({ dice: true, question: false, chest: false, chance: false });
-            }
-            else {
-                // 只有一般格子才顯示問題
-                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
-            }
+            handleAfterStepActions(finalStep)
             setIsRolling(false);
             setDiceNumber(3); 
         }, 1000);
@@ -299,10 +304,12 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
 
     const handleOpenChest=()=>{// 打開命運卡
         return new Promise((resolve,reject)=>{
+            let currentNewStep;
             const cardId=getRandomCard("chest");
             setCardIndex(prev=>({...prev,chest:cardId}))
             setSectionVisible({dice:false,question:false,chest:true,chance:false})
             setTimeout(()=>{
+                setSectionVisible({dice:false,question:false,chest:false,chance:false})
                 if(cardId===1){// 後退一步
                     const playerId=players.find(p=>p.current===true).id
                     handleMoveThePlayer(playerId,8,-1)
@@ -336,12 +343,16 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                                 if (distance < minDistance|| (distance === minDistance && p.step > currentPlayer.step)) {
                                     minDistance = distance;
                                     closestPlayer = p;
+                                    currentNewStep= p.step;
                                 }
                             }
                         });
     
-                        // 如果場上沒別人，就不換
-                        if (!closestPlayer) return prevPlayers;
+                        // 如果找不到其他人（例如只有一個玩家），就原地不動
+                        if (!closestPlayer) {
+                            currentNewStep=null
+                            return prevPlayers
+                        }
     
                         // 執行交換 (回傳新的陣列)
                         return prevPlayers.map(p => {
@@ -361,7 +372,15 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                             return p;
                         });
                     });
-                    setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+                    // 根據換到的位置判斷之後的操作
+                    if(currentNewStep===null){
+                        // 換下一位玩家
+                        handleNextPlayerTurn()
+                        setSectionVisible({dice:true,question:false,chest:false,chance:false})
+                    }
+                    else{
+                        handleAfterStepActions(currentNewStep)
+                    }
                     reject()
                 }
                 resolve()
@@ -371,10 +390,12 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
     }
 
     const handleOpenChance=()=>{// 打開機會卡
+        let currentNewStep;
         const cardId=getRandomCard("chance");
         setCardIndex(prev=>({...prev,chance:cardId}))
         setSectionVisible({dice:false,question:false,chest:false,chance:true})
         setTimeout(()=>{
+            setSectionVisible({dice:false,question:false,chest:false,chance:false})
             if(cardId===1){// 再骰一次
                 setSectionVisible({dice:true,question:false,chest:false,chance:false})
                 handleDiceClick(11)
@@ -398,21 +419,23 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                     let minDistance = Infinity;
 
                     prevPlayers.forEach(p => {
-                        if (p.id !== currentPlayer.id) {
+                        if (p.id !== currentPlayer.id && p.step > currentPlayer.step) {
                             const distance = Math.abs(p.step - currentPlayer.step);
                             
                             // 邏輯：找到距離最小的人
                             if (distance < minDistance) {
                                 minDistance = distance;
                                 closestPlayer = p;
+                                currentNewStep= p.step;
                             }
                         }
                     });
 
                     // 如果找不到其他人（例如只有一個玩家），就原地不動
-                    if (!closestPlayer) return prevPlayers;
-
-
+                    if (!closestPlayer) {
+                        currentNewStep=null
+                        return prevPlayers
+                    }
 
                     // 更新當前玩家的位置
                     return prevPlayers.map(p => {
@@ -428,7 +451,15 @@ const MonopolyPage = ({navigateTo, backgroundImage,currentProblemIndex,setCurren
                         return p;
                     });
                 });
-                setSectionVisible({ dice: false, question: true, chest: false, chance: false });
+                // 根據換到的位置判斷之後的操作
+                if(currentNewStep===null){
+                    // 換下一位玩家
+                    handleNextPlayerTurn()
+                    setSectionVisible({dice:true,question:false,chest:false,chance:false})
+                }
+                else{
+                    handleAfterStepActions(currentNewStep)
+                }
             }
         },1000)
     }
