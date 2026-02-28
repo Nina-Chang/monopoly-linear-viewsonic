@@ -25,6 +25,7 @@ function App() {
 
   const gameStyle = { 
     transform: `scale(${scale})`,
+    transformOrigin: 'center center', // 確保從中心縮放
   };
 
   const handleStartGame=()=>{
@@ -41,13 +42,17 @@ function App() {
   useEffect(() => {
     // 視窗縮放
     const handleResize = () => {
+      if(window.innerWidth===0) return;
       const scaleX = window.innerWidth / 1920;
       const scaleY = window.innerHeight / 1080;
       setScale(Math.min(scaleX, scaleY));
     };
     window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    const timer=setTimeout(handleResize,100)
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    }
   }, []);
 
 
