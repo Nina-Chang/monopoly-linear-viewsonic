@@ -1,4 +1,4 @@
-# 🚀 Monopoly Interactive Learning Game
+# 🚀 Monopoly Interactive Learning Game (Linear)
 
 一個基於 React 開發的互動式大富翁遊戲，支援自動縮放適應螢幕、非同步玩家位移系統，以及靈活的命運/機會卡牌機制。
 
