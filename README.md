@@ -33,4 +33,4 @@
 npm install
 npm start
 
-**基準解析度**：1920 x 1080。
+**Game designed for 1920x1080 full-screen play.**
